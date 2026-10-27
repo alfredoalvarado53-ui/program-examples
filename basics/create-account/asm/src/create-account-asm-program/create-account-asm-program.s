@@ -18,8 +18,6 @@
 
 .equ SYSTEM_PROGRAM_KEY, 0x50d0
 
-.equ PROGRAM_ID, 0x7938
-
 .equ ACCOUNT_STORAGE_OVERHEAD, 0x80    # 128
 .equ DEFAULT_RENT_EXEMPTION_THRESHOLD, 0x2
 
@@ -72,7 +70,7 @@ entrypoint:
     mov64 r1, r8
     add64 r1, 20                    # set dst in r1
     mov64 r2, r6
-    add64 r2, PROGRAM_ID            # set src in r2
+    add64 r2, SYSTEM_PROGRAM_KEY    # owner = system program
     lddw r3, 32                     # set len in r3
     call sol_memcpy_                # call sol_memcpy_(dst, src, len)
 

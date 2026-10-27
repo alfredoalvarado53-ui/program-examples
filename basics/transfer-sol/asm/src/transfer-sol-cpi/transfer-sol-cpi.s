@@ -22,10 +22,8 @@
 .equ SYSTEM_PROGRAM_LAMPORTS, 0x5110
 .equ SYSTEM_PROGRAM_DATA_LEN, 0x5118
 .equ SYSTEM_PROGRAM_DATA, 0x5120
-.equ SYSTEM_PROGRAM_RENT_EPOCH, 0x7930
 
-.equ INSTRUCTION_DATA_LEN, 0x7938
-.equ INSTRUCTION_DATA, 0x7940
+.equ MAX_PERMITTED_DATA_INCREASE, 0x2800
 
 
 .globl entrypoint
@@ -46,10 +44,16 @@ entrypoint:
   ldxb r2, [r1 + SYSTEM_PROGRAM_HEADER]
   jne r2, 0xff, error_duplicate_accounts
 
-  # Check instruction data.
-  ldxdw r4, [r1 + INSTRUCTION_DATA_LEN]
+  # Check instruction data. It follows the system program's account data, which
+  # has variable length: data + realloc padding, aligned to 8, then rent_epoch.
+  ldxdw r3, [r1 + SYSTEM_PROGRAM_DATA_LEN]
+  add64 r3, MAX_PERMITTED_DATA_INCREASE
+  add64 r3, 7
+  and64 r3, -8
+  add64 r3, r1
+  ldxdw r4, [r3 + SYSTEM_PROGRAM_DATA + 8]                        # instruction data len
   jne r4, 8, error_invalid_instruction_data
-  ldxdw r4, [r1 + INSTRUCTION_DATA]
+  ldxdw r4, [r3 + SYSTEM_PROGRAM_DATA + 16]                       # instruction data
 
   # Check sender lamports.
   ldxdw r2, [r1 + SENDER_LAMPORTS]
