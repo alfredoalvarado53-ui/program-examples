@@ -21,4 +21,7 @@ Solana program examples, one per framework flavor (`anchor/`, `native/`, `pinocc
 
 - **Resolver-2 feature unification:** each crate must declare every feature-gated dependency it uses itself (e.g. `solana-address` with `curve25519`/`decode`). Whole-workspace builds mask what per-crate CI builds expose.
 - **`anchor keys sync` rewrites `declare_id!` and strips Anchor.toml comments.** `basics/cross-program-invocation/anchor` has committed keypairs with a drift guard: never resync it.
+- **Non-anchor examples track latest and carry no pnpm overrides.** Fix an advisory by bumping the direct dependency, not by pinning a transitive one.
+- **kit 8 signer metas:** a hand-built `{ role: AccountRole.WRITABLE_SIGNER, signer }` in an object literal widens `role` to `AccountRole`, and `signTransactionMessageWithSigners` then rejects the message. Write `AccountRole.WRITABLE_SIGNER as const`.
+- **TypeScript 7 ships only the `tsc` CLI** (no `require('typescript')` API), and dropped `moduleResolution: node`. Anything that loads the compiler programmatically breaks on it.
 - Metaplex `token_metadata.so` is dumped from mainnet by each project's `prepare.mjs` postinstall. The metadata natives hand-build Metaplex instructions in `mpl_util.rs`, with no mpl crate dependency: keep it that way.
