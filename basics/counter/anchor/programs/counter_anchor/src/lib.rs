@@ -39,5 +39,5 @@ pub struct Increment<'info> {
 #[account]
 #[derive(InitSpace)]
 pub struct Counter {
-    count: u64,
+    pub count: u64,
 }
