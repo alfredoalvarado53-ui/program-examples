@@ -6,14 +6,11 @@ This example demonstrates how to create a NFT collection, how to mint a NFT and 
 
 ## Program Setup
 
-For this program example we will be cloning the Metaplex Token Metadata program from mainnet. You can find this in the Anchor.toml file
+For this program example we will be dumping the Metaplex Token Metadata program from mainnet. The `test` script in Anchor.toml does this once, then runs the Rust LiteSVM tests in `programs/mint-nft/tests/`:
 
-```rust
-[test.validator]
-url = "https://api.mainnet-beta.solana.com"
-
-[[test.validator.clone]]
-address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+```toml
+[scripts]
+test = "mkdir -p tests/fixtures && [ -f tests/fixtures/token_metadata.so ] || solana program dump -u m metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s tests/fixtures/token_metadata.so; cargo test"
 ```
 
 We will need this program to perform CPIs to create the Metadata Accounts, Master Edition Accounts and to Verify NFTs as part of collections

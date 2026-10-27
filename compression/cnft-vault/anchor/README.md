@@ -10,7 +10,7 @@ This program can be used as an inspiration on how to work with cNFTs in Solana p
 
 ## Components
 
-The Anchor program can be found in the _programs_ folder and _tests_ some clientside tests. There are also some typescript node scripts in _tests/scripts_ to run them individually (plus there is one called _withdrawWithLookup.ts_ which demonstrates the use of the program with account lookup tables).
+The Anchor program can be found in the _programs_ folder. Rust LiteSVM tests in _programs/cnft-vault/tests_ mint cNFTs into the vault and withdraw them against the mainnet Bubblegum, account compression and noop programs. Run them with `anchor build` and `anchor test`; the first run dumps those programs into _tests/fixtures_ with `solana program dump`.
 
 ## Deployment
 

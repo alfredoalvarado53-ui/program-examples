@@ -11,7 +11,7 @@
 
 import * as fs from 'node:fs';
 import { address, type Address, getAddressEncoder } from '@solana/kit';
-import { leafBytes, MerkleTree } from '../tests/merkle.ts';
+import { leafBytes, MerkleTree } from './merkle.ts';
 
 interface SnapshotEntry {
     source_address: string;

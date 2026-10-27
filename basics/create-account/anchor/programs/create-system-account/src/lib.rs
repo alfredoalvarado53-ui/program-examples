@@ -38,8 +38,8 @@ pub mod create_system_account {
 
 #[derive(AnchorSerialize, AnchorDeserialize, Debug)]
 pub struct AddressData {
-    name: String,
-    address: String,
+    pub name: String,
+    pub address: String,
 }
 
 #[derive(Accounts)]

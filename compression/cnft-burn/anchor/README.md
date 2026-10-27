@@ -5,7 +5,7 @@ This repository contains the cnft-burn program, a Solana Anchor program that all
 ## Components
 
 - programs: Contains the anchor program
-- tests: Contains the tests for the anchor program
+- programs/cnft-burn/tests: Rust LiteSVM tests that create a tree, mint a cNFT and burn it against the mainnet Bubblegum, account compression and noop programs
 
 ## Deployment
 
@@ -13,10 +13,8 @@ The program is deployed on devnet at `FbeHkUEevbhKmdk5FE5orcTaJkCYn5drwZoZXaxQXX
 
 ## How to run
 
-1. Configure RPC path in cnft-burn.ts. Personal preference: Helius RPCs.
-2. run `anchor build` at the root of the project i.e cnft-burn in this case.
-3. run `anchor deploy` to deploy and test the program on your own cluster.
-4. run `anchor test` to run the tests.
+1. run `anchor build` at the root of the project i.e cnft-burn in this case.
+2. run `anchor test` to run the tests. The first run dumps the required mainnet programs into `tests/fixtures` with `solana program dump`.
 
 ## Acknowledgements
 

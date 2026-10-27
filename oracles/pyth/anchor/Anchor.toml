@@ -1,5 +1,5 @@
 [toolchain]
-anchor_version = "1.0.2"
+anchor_version = "1.2.1"
 solana_version = "3.1.8"
 
 [features]
@@ -15,4 +15,4 @@ pythexample = "GUkjQmrLPFXXNK1bFLKt8XQi6g3TjxcHVspbjDoHvMG2"
 cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 [scripts]
-test = "pnpm mocha --import=tsx -t 1000000 tests/**/*.ts"
+test = "mkdir -p tests/fixtures && [ -f tests/fixtures/sol_usd_price_update.bin ] || solana account 7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE -um --output-file tests/fixtures/sol_usd_price_update.bin; cargo test"

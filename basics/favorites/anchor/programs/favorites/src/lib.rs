@@ -24,11 +24,7 @@ pub mod favorites {
             "User {user_public_key}'s favorite number is {number}, favorite color is: {color}, and their hobbies are {hobbies:?}",
         );
 
-        context.accounts.favorites.set_inner(Favorites {
-            number,
-            color,
-            hobbies,
-        });
+        context.accounts.favorites.set_inner(Favorites { number, color, hobbies });
         Ok(())
     }
 

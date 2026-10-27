@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 mod constants;
 mod errors;
 mod instructions;
-mod state;
+pub mod state;
 
 // Set the correct key here
 declare_id!("UPxp2moQFWsGqfFd3ynqG2W9mj9CTjH68NN2bYUAqV1");

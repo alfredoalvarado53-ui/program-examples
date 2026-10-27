@@ -5,7 +5,7 @@ declare_id!("Eoiuq1dXvHxh6dLx3wh9gj8kSAUpga11krTrbfF5XYsC");
 mod constants;
 mod error;
 mod instructions;
-mod state;
+pub mod state;
 
 pub use constants::*;
 use error::*;

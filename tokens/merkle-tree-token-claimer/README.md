@@ -38,13 +38,11 @@ Because the root never changes once claims begin, one user claiming does not inv
 
 ```bash
 cd anchor
-pnpm install
+anchor build
 anchor test
 ```
 
-`anchor test` builds the program and runs the LiteSVM test suite in `tests/litesvm.test.ts`, which covers initialization, pre-claim root updates, successful claims with receipts, duplicate-claim rejection, stolen-proof rejection, proof replay under alternate receipt indices, and the post-claim root freeze.
-
-The client side is written with [`@solana/kit`](https://github.com/anza-xyz/kit): each Anchor instruction is built directly from the IDL — the 8-byte instruction discriminator followed by Borsh-encoded arguments via kit's codecs — and program accounts are decoded the same way. For a larger project, [Codama](https://github.com/codama-idl/codama) can generate this client code from the IDL.
+`anchor test` runs `cargo test`, which executes the Rust LiteSVM tests in `programs/merkle-tree-token-claimer/tests/` against the built program. They cover initialization, pre-claim root updates, successful claims with receipts, duplicate-claim rejection, stolen-proof rejection, proof replay under alternate receipt indices, and the post-claim root freeze. Instructions and accounts are built from the program crate's own generated `instruction` and `accounts` types.
 
 ## Generating a tree from a snapshot
 
@@ -52,10 +50,11 @@ The client side is written with [`@solana/kit`](https://github.com/anza-xyz/kit)
 
 ```bash
 cd anchor
+pnpm install
 pnpm generate-tree scripts/sample-snapshot.json merkle-output.json
 ```
 
-The tree uses SHA-256 throughout: leaves are `sha256(leaf_bytes)` and parents are `sha256(left || right)`, with the last node of an odd level paired with a 32-byte zero hash. Padding with a zero hash instead of duplicating the last node matters: a duplicated node produces the symmetric parent `sha256(C || C)`, which lets one proof verify under two indices and open two receipt PDAs for the same leaf. `tests/merkle.ts` contains the reference implementation, which matches the program's verifier byte for byte.
+The tree uses SHA-256 throughout: leaves are `sha256(leaf_bytes)` and parents are `sha256(left || right)`, with the last node of an odd level paired with a 32-byte zero hash. Padding with a zero hash instead of duplicating the last node matters: a duplicated node produces the symmetric parent `sha256(C || C)`, which lets one proof verify under two indices and open two receipt PDAs for the same leaf. `scripts/merkle.ts` contains the reference implementation, which matches the program's verifier byte for byte; the Rust tests carry an equivalent builder.
 
 ## Adapting it for a real distribution
 

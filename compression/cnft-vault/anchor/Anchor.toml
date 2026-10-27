@@ -1,5 +1,5 @@
 [toolchain]
-anchor_version = "1.0.2"
+anchor_version = "1.2.1"
 solana_version = "3.1.8"
 
 [features]
@@ -16,4 +16,4 @@ cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "pnpm mocha --import=tsx -t 1000000 tests/**/*.ts"
+test = "mkdir -p tests/fixtures && for p in BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY:bubblegum cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK:spl_account_compression noopb9bkMVfRPU8AsbpTUg8AQkHtKwMYZiFUjNRtMmV:spl_noop; do [ -f tests/fixtures/${p#*:}.so ] || solana program dump -u m ${p%:*} tests/fixtures/${p#*:}.so; done; cargo test"

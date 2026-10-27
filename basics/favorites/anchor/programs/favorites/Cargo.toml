@@ -20,7 +20,14 @@ custom-heap = []
 custom-panic = []
 
 [dependencies]
-anchor-lang = {version = "1.0.2", features = ["init-if-needed"]}
+anchor-lang = {version = "1.2.1", features = ["init-if-needed"]}
+
+[dev-dependencies]
+litesvm = "0.18.1"
+solana-keypair = "3.1.2"
+solana-message = "4.6.0"
+solana-signer = "3.0.1"
+solana-transaction = "4.3.0"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }

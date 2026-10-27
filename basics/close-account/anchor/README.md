@@ -28,10 +28,9 @@
     pub user_account: Account<'info, UserState>,
     ```
 
-3. In our test [test.ts](tests/test.ts) we're using `fetchNullable` after closing the account,
-   since a closed account no longer exists and should resolve to `null`.
+3. In our test [test_close_account.rs](programs/close-account/tests/test_close_account.rs) we
+   check that the account no longer exists after closing it.
 
-    ```typescript
-    const userAccount = await program.account.userState.fetchNullable(userAccountAddress);
-    assert.equal(userAccount, null);
+    ```rust
+    assert!(svm.get_account(&user_account).is_none());
     ```

@@ -1,6 +1,11 @@
 use {
-    abl_token::{accounts::InitConfig, accounts::InitMint, accounts::ResizeMetaList, instructions::InitMintArgs, Mode},
+    abl_token::{
+        accounts::{InitConfig, InitMint, InitWallet, RemoveWallet, ResizeMetaList},
+        instructions::{InitMintArgs, InitWalletArgs},
+        ABWallet, Config, Mode,
+    },
     anchor_lang::solana_program::system_instruction::create_account,
+    anchor_lang::AccountDeserialize,
     anchor_lang::InstructionData,
     anchor_lang::ToAccountMetas,
     anchor_spl::token_2022::{
@@ -42,9 +47,56 @@ fn setup() -> (LiteSVM, Keypair) {
 
     let bytecode = std::fs::read(so_path).unwrap();
 
-    svm.add_program(PROGRAM_ID, &bytecode);
+    svm.add_program(PROGRAM_ID, &bytecode).unwrap();
 
     (svm, admin_kp)
+}
+
+fn init_config(svm: &mut LiteSVM, admin_kp: &Keypair) -> Pubkey {
+    let admin_pk = admin_kp.pubkey();
+    let config = derive_config();
+    let accounts = InitConfig { payer: admin_pk, config, system_program: SYSTEM_PROGRAM_ID };
+    let instruction = Instruction {
+        program_id: PROGRAM_ID,
+        accounts: accounts.to_account_metas(None),
+        data: abl_token::instruction::InitConfig {}.data(),
+    };
+    let tx = Transaction::new(&[admin_kp], Message::new(&[instruction], Some(&admin_pk)), svm.latest_blockhash());
+    svm.send_transaction(tx).unwrap();
+    config
+}
+
+fn init_wallet(svm: &mut LiteSVM, authority_kp: &Keypair, wallet: Pubkey, allowed: bool) -> Pubkey {
+    let authority = authority_kp.pubkey();
+    let ab_wallet = derive_ab_wallet(&wallet);
+    let accounts =
+        InitWallet { authority, config: derive_config(), wallet, ab_wallet, system_program: SYSTEM_PROGRAM_ID };
+    let instruction = Instruction {
+        program_id: PROGRAM_ID,
+        accounts: accounts.to_account_metas(None),
+        data: abl_token::instruction::InitWallet { args: InitWalletArgs { allowed } }.data(),
+    };
+    let tx = Transaction::new(&[authority_kp], Message::new(&[instruction], Some(&authority)), svm.latest_blockhash());
+    svm.send_transaction(tx).unwrap();
+    ab_wallet
+}
+
+fn remove_wallet(svm: &mut LiteSVM, authority_kp: &Keypair, wallet: Pubkey) -> bool {
+    let authority = authority_kp.pubkey();
+    let accounts = RemoveWallet {
+        authority,
+        config: derive_config(),
+        wallet,
+        ab_wallet: derive_ab_wallet(&wallet),
+        system_program: SYSTEM_PROGRAM_ID,
+    };
+    let instruction = Instruction {
+        program_id: PROGRAM_ID,
+        accounts: accounts.to_account_metas(None),
+        data: abl_token::instruction::RemoveWallet {}.data(),
+    };
+    let tx = Transaction::new(&[authority_kp], Message::new(&[instruction], Some(&authority)), svm.latest_blockhash());
+    svm.send_transaction(tx).is_ok()
 }
 
 /// Runs `init_config` then `init_mint` (with `admin_pk` as the mint's
@@ -55,20 +107,9 @@ fn setup_mint(svm: &mut LiteSVM, admin_kp: &Keypair) -> (Pubkey, Pubkey) {
 
     let mint_kp = Keypair::new();
     let mint_pk = mint_kp.pubkey();
-    let config = derive_config();
     let meta_list = derive_meta_list(&mint_pk);
 
-    let init_cfg_ix = abl_token::instruction::InitConfig {};
-
-    let init_cfg_accounts = InitConfig { payer: admin_pk, config: config, system_program: SYSTEM_PROGRAM_ID };
-
-    let accs = init_cfg_accounts.to_account_metas(None);
-
-    let instruction = Instruction { program_id: PROGRAM_ID, accounts: accs, data: init_cfg_ix.data() };
-    let msg = Message::new(&[instruction], Some(&admin_pk));
-    let tx = Transaction::new(&[admin_kp], msg, svm.latest_blockhash());
-
-    svm.send_transaction(tx).unwrap();
+    init_config(svm, admin_kp);
 
     let args: InitMintArgs = InitMintArgs {
         name: "Test".to_string(),
@@ -82,7 +123,7 @@ fn setup_mint(svm: &mut LiteSVM, admin_kp: &Keypair) -> (Pubkey, Pubkey) {
         mode: Mode::Mixed,
         threshold: 100000,
     };
-    let init_mint_ix = abl_token::instruction::InitMint { args: args };
+    let init_mint_ix = abl_token::instruction::InitMint { args };
 
     let data = init_mint_ix.data();
 
@@ -96,7 +137,7 @@ fn setup_mint(svm: &mut LiteSVM, admin_kp: &Keypair) -> (Pubkey, Pubkey) {
 
     let accs = init_mint_accounts.to_account_metas(None);
 
-    let instruction = Instruction { program_id: PROGRAM_ID, accounts: accs, data: data };
+    let instruction = Instruction { program_id: PROGRAM_ID, accounts: accs, data };
     let msg = Message::new(&[instruction], Some(&admin_pk));
     let tx = Transaction::new(&[admin_kp, &mint_kp], msg, svm.latest_blockhash());
 
@@ -287,9 +328,53 @@ fn resize_meta_list_migrates_a_mint_created_under_the_old_one_entry_layout() {
     assert_eq!(migrated.data, expected_data, "migrated meta list must match a freshly-initialized one exactly");
 }
 
+#[test]
+fn init_config_sets_the_payer_as_authority() {
+    let (mut svm, admin_kp) = setup();
+    let config = init_config(&mut svm, &admin_kp);
+
+    let account = svm.get_account(&config).unwrap();
+    let config = Config::try_deserialize(&mut account.data.as_slice()).unwrap();
+    assert_eq!(config.authority, admin_kp.pubkey());
+}
+
+#[test]
+fn init_wallet_then_remove_wallet_closes_it() {
+    let (mut svm, admin_kp) = setup();
+    init_config(&mut svm, &admin_kp);
+    let wallet = Pubkey::new_unique();
+
+    let ab_wallet = init_wallet(&mut svm, &admin_kp, wallet, true);
+    let account = svm.get_account(&ab_wallet).unwrap();
+    let decoded = ABWallet::try_deserialize(&mut account.data.as_slice()).unwrap();
+    assert_eq!(decoded.wallet, wallet);
+    assert!(decoded.allowed);
+
+    assert!(remove_wallet(&mut svm, &admin_kp, wallet));
+    assert!(svm.get_account(&ab_wallet).is_none_or(|account| account.data.is_empty()));
+}
+
+#[test]
+fn remove_wallet_rejects_a_non_authority_caller() {
+    let (mut svm, admin_kp) = setup();
+    init_config(&mut svm, &admin_kp);
+    let wallet = Pubkey::new_unique();
+    let ab_wallet = init_wallet(&mut svm, &admin_kp, wallet, false);
+
+    let impostor_kp = Keypair::new();
+    svm.airdrop(&impostor_kp.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
+
+    assert!(!remove_wallet(&mut svm, &impostor_kp, wallet), "has_one = authority must reject a non-authority caller");
+    assert!(!svm.get_account(&ab_wallet).unwrap().data.is_empty());
+}
+
 fn derive_config() -> Pubkey {
     let seeds = &[b"config".as_ref()];
     Pubkey::find_program_address(seeds, &PROGRAM_ID).0
+}
+
+fn derive_ab_wallet(wallet: &Pubkey) -> Pubkey {
+    Pubkey::find_program_address(&[abl_token::AB_WALLET_SEED, wallet.as_ref()], &PROGRAM_ID).0
 }
 
 fn derive_meta_list(mint: &Pubkey) -> Pubkey {

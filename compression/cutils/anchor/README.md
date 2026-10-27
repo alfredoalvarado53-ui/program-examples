@@ -14,9 +14,7 @@ This program can be used as an inspiration on how to work with cNFTs in Solana p
 - **programs**: the Solana program
     - There is a validate/actuate setup which allows you to validate some constraints through an `access_control` macro. This might be useful to use in conjunction with the cNFT verification logic.
 
-- **tests**:
-    - `setup.ts` which is to be executed first if you don't already have a collection with merkle tree(s).
-    - `tests.ts` for running individual minting and verification tests
+- **programs/cutils/tests**: Rust LiteSVM tests that create a tree and a collection, mint a cNFT through the program and verify it, against the mainnet Bubblegum, account compression, noop and Token Metadata programs.
 
 ## Deployment
 
@@ -35,16 +33,9 @@ A video about the creation of this code which also contains further explanations
 
 ## How-to
 
-1. Configure RPC path in _utils/readAPI.ts_. Personal preference: Helius RPCs.
-2. cd root folder
-3. Install packages: `yarn`
-4. Optional: run `npx ts-node tests/setup.ts` to setup a NFT collection and its underlying merkle tree.
-5. Comment-out the tests you don't want to execute in `tests/tests.ts`
-6. If minting, change to your appropriate NFT uri
-7. If verifying, change to your appropriate assetId (cNFT mint address)
-8. Run `anchor test --skip-build --skip-deploy --skip-local-validator`
-9. You can check your cNFTs on devnet through the Solflare wallet (thanks [@SolPlay_jonas](https://twitter.com/SolPlay_jonas))
-10. You might want to change the wallet-path in `Anchor.toml`
+1. cd root folder
+2. Run `anchor build`
+3. Run `anchor test --skip-build --skip-deploy --skip-local-validator`. The first run dumps the required mainnet programs into `tests/fixtures` with `solana program dump`.
 
 ## Acknowledgements
 
