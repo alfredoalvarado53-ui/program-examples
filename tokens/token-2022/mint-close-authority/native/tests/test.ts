@@ -46,10 +46,10 @@ describe('Create Token', () => {
         const ix = {
             programAddress: programId,
             accounts: [
-                { address: mint.address, role: AccountRole.WRITABLE_SIGNER, signer: mint }, // Mint account
+                { address: mint.address, role: AccountRole.WRITABLE_SIGNER as const, signer: mint }, // Mint account
                 { address: payer.address, role: AccountRole.WRITABLE }, // Mint authority account
                 { address: payer.address, role: AccountRole.WRITABLE }, // Mint close authority account
-                { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer }, // Transaction Payer
+                { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer }, // Transaction Payer
                 { address: SYSVAR_RENT_ADDRESS, role: AccountRole.READONLY }, // Rent account
                 { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // System program
                 { address: TOKEN_2022_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // Token program

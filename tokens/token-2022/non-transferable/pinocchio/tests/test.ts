@@ -54,9 +54,9 @@ describe('Token-2022 Non-Transferable (Pinocchio)', () => {
         const ix = {
             programAddress: programId,
             accounts: [
-                { address: mint.address, role: AccountRole.WRITABLE_SIGNER, signer: mint }, // mint account
+                { address: mint.address, role: AccountRole.WRITABLE_SIGNER as const, signer: mint }, // mint account
                 { address: payer.address, role: AccountRole.READONLY }, // mint authority
-                { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer }, // payer
+                { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer }, // payer
                 { address: SYSVAR_RENT_ADDRESS, role: AccountRole.READONLY }, // rent sysvar
                 { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // system program
                 { address: TOKEN_2022_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // Token-2022 program

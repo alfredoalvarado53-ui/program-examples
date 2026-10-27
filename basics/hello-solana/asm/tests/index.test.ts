@@ -31,7 +31,7 @@ describe('hello-solana', () => {
         // We set up our instruction first.
         const ix = {
             programAddress: programId,
-            accounts: [{ address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer }],
+            accounts: [{ address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer }],
             data: new Uint8Array(0), // No data
         };
 

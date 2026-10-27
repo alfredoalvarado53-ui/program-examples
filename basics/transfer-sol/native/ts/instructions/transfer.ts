@@ -26,7 +26,7 @@ export function createCpiTransferInstruction(
     return {
         programAddress: programId,
         accounts: [
-            { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer },
+            { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer },
             { address: recipientAddress, role: AccountRole.WRITABLE },
             { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
         ],
@@ -44,7 +44,7 @@ export function createProgramTransferInstruction(
     return {
         programAddress: programId,
         accounts: [
-            { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer },
+            { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer },
             { address: recipientAddress, role: AccountRole.WRITABLE },
             { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
         ],

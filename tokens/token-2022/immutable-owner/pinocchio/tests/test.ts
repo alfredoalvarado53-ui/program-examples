@@ -90,10 +90,10 @@ describe('Token-2022 Immutable Owner (Pinocchio)', () => {
         const ix = {
             programAddress: programId,
             accounts: [
-                { address: tokenAccount.address, role: AccountRole.WRITABLE_SIGNER, signer: tokenAccount }, // token account
+                { address: tokenAccount.address, role: AccountRole.WRITABLE_SIGNER as const, signer: tokenAccount }, // token account
                 { address: mint.address, role: AccountRole.READONLY }, // mint account
                 { address: owner.address, role: AccountRole.READONLY }, // owner
-                { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer }, // payer
+                { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer }, // payer
                 { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // system program
                 { address: TOKEN_2022_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // Token-2022 program
             ],
@@ -172,10 +172,10 @@ describe('Token-2022 Immutable Owner (Pinocchio)', () => {
         const createIx = {
             programAddress: programId,
             accounts: [
-                { address: tokenAccount.address, role: AccountRole.WRITABLE_SIGNER, signer: tokenAccount },
+                { address: tokenAccount.address, role: AccountRole.WRITABLE_SIGNER as const, signer: tokenAccount },
                 { address: mint.address, role: AccountRole.READONLY },
                 { address: owner.address, role: AccountRole.READONLY },
-                { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer },
+                { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer },
                 { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
                 { address: TOKEN_2022_PROGRAM_ADDRESS, role: AccountRole.READONLY },
             ],

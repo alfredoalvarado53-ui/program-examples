@@ -38,7 +38,7 @@ describe('custom-instruction-data', () => {
     async function goToPark(name: string, height: number): Promise<string[]> {
         const ix = {
             programAddress: programId,
-            accounts: [{ address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer }],
+            accounts: [{ address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer }],
             data: instructionDataEncoder.encode({ name, height }),
         };
 

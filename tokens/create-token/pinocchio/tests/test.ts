@@ -80,10 +80,10 @@ describe('Create Token (Pinocchio)', () => {
         const ix = {
             programAddress: programId,
             accounts: [
-                { address: mint.address, role: AccountRole.WRITABLE_SIGNER, signer: mint }, // mint account
+                { address: mint.address, role: AccountRole.WRITABLE_SIGNER as const, signer: mint }, // mint account
                 { address: payer.address, role: AccountRole.READONLY }, // mint authority
                 { address: metadataAddress, role: AccountRole.WRITABLE }, // metadata account
-                { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer }, // payer
+                { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer }, // payer
                 { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // system program
                 { address: TOKEN_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // token program
                 { address: TOKEN_METADATA_PROGRAM_ID, role: AccountRole.READONLY }, // token metadata program

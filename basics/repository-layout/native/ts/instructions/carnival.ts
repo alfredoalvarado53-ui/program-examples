@@ -31,7 +31,7 @@ export type CarnivalInstructionData = {
 export function createCarnivalInstruction(payer: TransactionSigner, programId: Address, data: CarnivalInstructionData) {
     return {
         programAddress: programId,
-        accounts: [{ address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer }],
+        accounts: [{ address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer }],
         data: carnivalEncoder.encode(data),
     };
 }

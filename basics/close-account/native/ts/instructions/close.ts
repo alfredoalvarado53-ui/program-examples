@@ -10,7 +10,7 @@ export function createCloseUserInstruction(target: Address, payer: TransactionSi
         programAddress: programId,
         accounts: [
             { address: target, role: AccountRole.WRITABLE },
-            { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer },
+            { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer },
             { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
         ],
         data: closeUserEncoder.encode({ instruction: MyInstruction.CloseUser }),

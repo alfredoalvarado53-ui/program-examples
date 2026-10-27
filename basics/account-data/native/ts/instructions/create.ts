@@ -30,10 +30,10 @@ export function createCreateAddressInfoInstruction(
         accounts: [
             {
                 address: addressInfoAccount.address,
-                role: AccountRole.WRITABLE_SIGNER,
+                role: AccountRole.WRITABLE_SIGNER as const,
                 signer: addressInfoAccount,
             },
-            { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer },
+            { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer },
             { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
         ],
         data: createAddressInfoEncoder.encode(addressInfo),

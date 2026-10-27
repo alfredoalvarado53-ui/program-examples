@@ -10,7 +10,7 @@ export function createTransferInstruction(
     return {
         programAddress,
         accounts: [
-            { address: sender.address, role: AccountRole.WRITABLE_SIGNER, signer: sender },
+            { address: sender.address, role: AccountRole.WRITABLE_SIGNER as const, signer: sender },
             { address: recipientAddress, role: AccountRole.WRITABLE },
             { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
         ],

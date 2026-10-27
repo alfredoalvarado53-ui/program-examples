@@ -32,8 +32,8 @@ describe('Create a system account', () => {
         const ix = {
             programAddress: programId,
             accounts: [
-                { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer },
-                { address: newKeypair.address, role: AccountRole.WRITABLE_SIGNER, signer: newKeypair },
+                { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer },
+                { address: newKeypair.address, role: AccountRole.WRITABLE_SIGNER as const, signer: newKeypair },
                 { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
             ],
             data: new Uint8Array(512),

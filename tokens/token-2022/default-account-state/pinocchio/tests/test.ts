@@ -60,12 +60,12 @@ describe('Token-2022 Default Account State (Pinocchio)', () => {
         const ix = {
             programAddress: programId,
             accounts: [
-                { address: mint.address, role: AccountRole.WRITABLE_SIGNER, signer: mint }, // mint account
+                { address: mint.address, role: AccountRole.WRITABLE_SIGNER as const, signer: mint }, // mint account
                 // The mint authority doubles as the freeze authority. It is the same key
                 // as the payer so a single signature can both fund the account and, as the
                 // freeze authority, sign the post-init default-state update.
                 { address: payer.address, role: AccountRole.READONLY }, // mint authority
-                { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer }, // payer
+                { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer }, // payer
                 { address: SYSVAR_RENT_ADDRESS, role: AccountRole.READONLY }, // rent sysvar
                 { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // system program
                 { address: TOKEN_2022_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // Token-2022 program

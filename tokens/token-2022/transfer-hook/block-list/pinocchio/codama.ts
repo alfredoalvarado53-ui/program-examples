@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { renderJavaScriptVisitor, renderRustVisitor } from '@codama/renderers';
+import { renderVisitor as renderJavaScriptVisitor } from '@codama/renderers-js';
+import { renderVisitor as renderRustVisitor } from '@codama/renderers-rust';
 import {
     accountNode,
     accountValueNode,
@@ -311,10 +312,10 @@ const codama = createFromRoot(root);
 
 const _configPreserver = preserveConfigFiles();
 
-codama.accept(renderJavaScriptVisitor('sdk/ts/src', { formatCode: true }));
+codama.accept(renderJavaScriptVisitor('sdk/ts', { generatedFolder: 'src', formatCode: true, syncPackageJson: false }));
 codama.accept(
-    renderRustVisitor('sdk/rust/src/client', {
-        crateFolder: 'sdk/rust/',
+    renderRustVisitor('sdk/rust', {
+        generatedFolder: 'src/client',
         formatCode: true,
     }),
 );

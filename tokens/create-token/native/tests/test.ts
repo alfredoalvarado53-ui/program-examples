@@ -78,10 +78,10 @@ describe('Create Tokens!', () => {
         const ix = {
             programAddress: programId,
             accounts: [
-                { address: mintKeypair.address, role: AccountRole.WRITABLE_SIGNER, signer: mintKeypair }, // Mint account
+                { address: mintKeypair.address, role: AccountRole.WRITABLE_SIGNER as const, signer: mintKeypair }, // Mint account
                 { address: payer.address, role: AccountRole.WRITABLE }, // Mint authority account
                 { address: metadataAddress, role: AccountRole.WRITABLE }, // Metadata account
-                { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer }, // Payer
+                { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer }, // Payer
                 { address: SYSVAR_RENT_ADDRESS, role: AccountRole.READONLY }, // Rent account
                 { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // System program
                 { address: TOKEN_PROGRAM_ADDRESS, role: AccountRole.READONLY }, // Token program

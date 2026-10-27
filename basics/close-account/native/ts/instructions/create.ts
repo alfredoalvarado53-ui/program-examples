@@ -27,7 +27,7 @@ export function createCreateUserInstruction(
         programAddress: programId,
         accounts: [
             { address: target, role: AccountRole.WRITABLE },
-            { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer },
+            { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer },
             { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
         ],
         data: createUserEncoder.encode({ instruction: MyInstruction.CreateUser, name }),

@@ -13,7 +13,7 @@ export function createCreateNewAccountInstruction(
     return {
         programAddress: programId,
         accounts: [
-            { address: newAccount.address, role: AccountRole.WRITABLE_SIGNER, signer: newAccount },
+            { address: newAccount.address, role: AccountRole.WRITABLE_SIGNER as const, signer: newAccount },
             { address: rentVault, role: AccountRole.WRITABLE },
             { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
         ],

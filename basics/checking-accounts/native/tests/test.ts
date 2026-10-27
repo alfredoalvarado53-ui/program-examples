@@ -60,9 +60,17 @@ describe('Checking accounts', () => {
         const ix = {
             programAddress: programId,
             accounts: [
-                { address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer },
-                { address: accountToCreate.address, role: AccountRole.WRITABLE_SIGNER, signer: accountToCreate },
-                { address: accountToChange.address, role: AccountRole.WRITABLE_SIGNER, signer: accountToChange },
+                { address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer },
+                {
+                    address: accountToCreate.address,
+                    role: AccountRole.WRITABLE_SIGNER as const,
+                    signer: accountToCreate,
+                },
+                {
+                    address: accountToChange.address,
+                    role: AccountRole.WRITABLE_SIGNER as const,
+                    signer: accountToChange,
+                },
                 { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
             ],
             data: new Uint8Array(0),

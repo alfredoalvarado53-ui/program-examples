@@ -17,7 +17,7 @@ export const visitParkEncoder = getStructEncoder([
 export function createVisitParkInstruction(payer: TransactionSigner, programId: Address, name: string, height: number) {
     return {
         programAddress: programId,
-        accounts: [{ address: payer.address, role: AccountRole.WRITABLE_SIGNER, signer: payer }],
+        accounts: [{ address: payer.address, role: AccountRole.WRITABLE_SIGNER as const, signer: payer }],
         data: visitParkEncoder.encode({ name, height }),
     };
 }
