@@ -312,7 +312,7 @@ const codama = createFromRoot(root);
 
 const _configPreserver = preserveConfigFiles();
 
-codama.accept(renderJavaScriptVisitor('sdk/ts', { generatedFolder: 'src', formatCode: true, syncPackageJson: false }));
+codama.accept(renderJavaScriptVisitor('sdk/ts', { generatedFolder: 'src', formatCode: false, syncPackageJson: false }));
 codama.accept(
     renderRustVisitor('sdk/rust', {
         generatedFolder: 'src/client',
