@@ -60,6 +60,7 @@ members = [
     "tokens/pda-mint-authority/pinocchio/program",
     "tokens/transfer-tokens/native/program",
     "tokens/transfer-tokens/pinocchio/program",
+    "tokens/token-swap/native/program",
     "tokens/token-2022/mint-close-authority/native/program",
     "tokens/token-2022/mint-close-authority/pinocchio/program",
     "tokens/token-2022/non-transferable/native/program",
