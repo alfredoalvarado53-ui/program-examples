@@ -39,7 +39,7 @@ inputs:
   anchor-version:
     description: 'Anchor version to install'
     required: false
-    default: '1.0.2'
+    default: '1.2.1'
   install-just:
     description: 'Install just'
     required: false

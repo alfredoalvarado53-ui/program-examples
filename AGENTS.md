@@ -11,10 +11,9 @@ Solana program examples, one per framework flavor (`anchor/`, `native/`, `pinocc
 
 ## Test stack (do not deviate)
 
-- Runner is mocha via tsx. Never `node:test` imports: `node:test` suites under mocha exit 0 even when failing.
-- Non-anchor tests: `@solana/kit` + litesvm 1.x. Anchor tests: `@anchor-lang/core` + `anchor-litesvm` + litesvm **0.8** with `@solana/web3.js`: deliberate, anchor's JS client stays web3.js-based until it moves to kit.
-- anchor-litesvm pins its own old litesvm, so every anchor project carries `pnpm.overrides { "litesvm": "^0.8.0" }`. Without it, failed transactions pass `instanceof` checks silently and tests go green.
-- litesvm never throws on a failed transaction: assert `result instanceof FailedTransactionMetadata`. Resending identical bytes needs `svm.expireBlockhash()` in between.
+- Non-anchor tests: TypeScript, mocha via tsx, `@solana/kit` + litesvm 1.x. Never `node:test` imports: `node:test` suites under mocha exit 0 even when failing.
+- Anchor tests: Rust only, in `programs/<prog>/tests/*.rs` on the litesvm crate, built from the program's own `instruction::X`, `accounts::X` and `try_deserialize` (Anchor 1.2's default template). No JS harness, `package.json` or web3.js in anchor examples; `[scripts] test = "cargo test"`, and CI runs it through `anchor test --skip-build --skip-local-validator --skip-deploy`.
+- litesvm never throws on a failed transaction: in TS assert `result instanceof FailedTransactionMetadata`. Resending identical bytes needs `expireBlockhash()` in between (both languages).
 - bankrun and the older harnesses were removed deliberately; don't reintroduce them from upstream examples or old tutorials.
 
 ## Traps

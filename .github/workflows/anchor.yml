@@ -129,9 +129,10 @@ jobs:
       # whenever the weekly toolchain cache is cold.
       - uses: ./.github/actions/setup
         with:
+          install-pnpm: 'false'
           solana-version: '3.1.8'
           install-anchor: 'true'
-          anchor-version: '1.0.2'
+          anchor-version: '1.2.1'
       - name: Display Versions
         run: |
           solana -V
@@ -149,14 +150,6 @@ jobs:
             echo "Building and Testing $project"
             cd "$project" || return 1
 
-            # Install dependencies first
-            if ! pnpm install --frozen-lockfile; then
-              echo "::error::pnpm install failed for $project"
-              echo "$project: pnpm install failed" >> $GITHUB_WORKSPACE/failed_projects.txt
-              cd - > /dev/null
-              return 1
-            fi
-
             # Run anchor build
             # --ignore-keys: most examples don't commit program keypairs, so CI
             # generates ephemeral ones that won't match the source declare_id!
@@ -168,31 +161,19 @@ jobs:
               return 1
             fi
 
-            # Typecheck (after anchor build so generated target/types exist)
-            if [ -f tsconfig.json ]; then
-              if ! pnpm exec tsc --noEmit -p tsconfig.json; then
-                echo "::error::typecheck failed for $project"
-                echo "$project: typecheck failed" >> $GITHUB_WORKSPACE/failed_projects.txt
-                rm -rf target
-                cd - > /dev/null
-                return 1
-              fi
-            fi
-
-            # Run anchor test. Anchor 1.0.x syncs program ids to the ephemeral
-            # keypair during its own build, so no separate keys sync is needed —
-            # re-verify this if anchor-version is bumped.
-            # --validator legacy: surfpool (the Anchor 1.0 default) isn't installed in CI
-            if ! anchor test --validator legacy; then
+            # Tests are Rust LiteSVM tests run by the Anchor.toml [scripts] test
+            # command; they load the program at its declare_id!, so no validator,
+            # deploy or keys sync is needed.
+            if ! anchor test --skip-build --skip-local-validator --skip-deploy; then
               echo "::error::anchor test failed for $project"
               echo "$project: anchor test failed" >> $GITHUB_WORKSPACE/failed_projects.txt
-              rm -rf target node_modules
+              rm -rf target
               cd - > /dev/null
               return 1
             fi
 
             echo "Build and tests succeeded for $project."
-            rm -rf target node_modules
+            rm -rf target
             cd - > /dev/null
             return 0
           }

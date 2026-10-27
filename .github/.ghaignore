@@ -1,7 +1,3 @@
-# programs build; tests need the DAS API, unavailable on localnet
-compression/cutils/anchor
-compression/cnft-vault/anchor
-compression/cnft-burn/anchor
 
 # justfile-driven example: built and tested by .github/workflows/just.yml,
 # not the legacy pinocchio CI (it has no build-and-test script)
